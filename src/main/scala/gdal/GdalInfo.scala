@@ -32,7 +32,7 @@ object GdalInfo {
   def apply(options: GdalInfoOptions): Unit = {
     gdal.AllRegister()
 
-    val dataset = 
+    val dataset =
       gdal.Open(options.file.getAbsolutePath,
         gdalconstConstants.GA_ReadOnly)
 
@@ -93,21 +93,31 @@ object GdalInfo {
     }
 
     if(options.showMetadata) {
-      val metadata = dataset.GetMetadata_List("").toList
-      if(!metadata.isEmpty) {
-        println("Metadata:")
-        for(key <- metadata) {
-          println(s"  $key")
-        }
-      }
+      val metadataPairs = List(
+        ("Image Structure Metadata:", "IMAGE_STRUCTURE"),
+        ("Subdatasets:", "SUBDATASETS"),
+        ("Geolocation:", "GEOLOCATION"),
+        ("RPC Metadata:", "RPC")
+      )
+
+      printMetadata("Metadata:", "")
+
       for(domain <- options.mdds) {
-        val md = dataset.GetMetadata_List(domain).toList
-        if(!metadata.isEmpty) {
-          println(s"Metadata ($domain):")
-          for(key <- metadata) {
-            println(s"  $key")
-          }
-        }
+        printMetadata("Metadata ($domain):", domain)
+      }
+
+      for(pair <- metadataPairs) {
+        printMetadata(pair._1, pair._2)
+      }
+    }
+  }
+
+  def printMetadata(header: String, id: String) = {
+    val md = dataset.GetMetadata_List(id).toList
+    if(!md.isEmpty) {
+      println(header)
+      for(key <- md) {
+        println(s"  $key")
       }
     }
   }
