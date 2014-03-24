@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
   "com.github.scopt" % "scopt_2.10" % "3.2.0"
 )
 
+javaOptions += "-Djava.library.path=/usr/local/lib"
+
 // assemblySettings
 
 // mergeStrategy in assembly <<= (mergeStrategy in assembly) {
