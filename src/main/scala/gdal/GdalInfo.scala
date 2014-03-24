@@ -18,10 +18,7 @@ import org.gdal.osr.SpatialReference
 
 import org.gdal.ogr.Geometry
 
-//case class Options(
-
-
-object Main {
+object GdalInfo {
   val usage = "Usage: gdalinfo [--help-general] [-mm] [-stats] [-hist] [-nogcp] [-nomd]\n               [-norat] [-noct] [-mdd domain]* [-checksum] datasetname"
 
   def main(args:Array[String]): Unit = {
