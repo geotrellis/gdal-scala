@@ -93,6 +93,16 @@ object GdalInfo {
     }
 
     if(options.showMetadata) {
+      def printMetadata(header: String, id: String) = {
+        val md = dataset.GetMetadata_List(id).toList
+        if(!md.isEmpty) {
+          println(header)
+          for(key <- md) {
+            println(s"  $key")
+          }
+        }
+      }
+
       val metadataPairs = List(
         ("Image Structure Metadata:", "IMAGE_STRUCTURE"),
         ("Subdatasets:", "SUBDATASETS"),
@@ -108,16 +118,6 @@ object GdalInfo {
 
       for(pair <- metadataPairs) {
         printMetadata(pair._1, pair._2)
-      }
-    }
-  }
-
-  def printMetadata(header: String, id: String) = {
-    val md = dataset.GetMetadata_List(id).toList
-    if(!md.isEmpty) {
-      println(header)
-      for(key <- md) {
-        println(s"  $key")
       }
     }
   }
