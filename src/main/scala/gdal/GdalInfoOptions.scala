@@ -14,13 +14,15 @@ case class GdalInfoOptions(
   // -nogcp
   showGcps: Boolean = true,
   // -nomd
-  showMetaData: Boolean = true,
+  showMetadata: Boolean = true,
   // -noct
   showColorTable: Boolean = true,
   // -norat
   showRAT:Boolean = true,
   // -checksum
   computeChecksum: Boolean = false,
+  // -mdd
+  mdds: Seq[String] = Seq(),
   // Positional Argument
   file: File = null
 )
@@ -56,8 +58,8 @@ object GdalInfoOptions {
     } text("Suppress printing of color table.")
 
     opt[Unit]("nomd") action { (_, c) =>
-      c.copy(showColorTable = false)
-    } text("uppress metadata printing. Some datasets may contain a lot of metadata strings.")
+      c.copy(showMetadata = false)
+    } text("Suppress metadata printing. Some datasets may contain a lot of metadata strings.")
 
     opt[Unit]("norat") action { (_, c) =>
       c.copy(showColorTable = false)
@@ -67,6 +69,10 @@ object GdalInfoOptions {
       c.copy(computeChecksum = true)
     } text("Force computation of the checksum for each band in the dataset.")
 
+    opt[String]("mdd") unbounded() optional() action { (mdd, c) =>
+      c.copy(mdds = c.mdds :+ mdd)
+    } text("Report metadata for the specified domain. Starting with GDAL 2.0, 'all' can be used to report metadata in all domains.")
+
     arg[File]("<file>") required() action { (f: File, c) =>
       c.copy(file = f)
     } text("Path to a GDAL supported raster dataset.")
@@ -74,4 +80,14 @@ object GdalInfoOptions {
 
   def parse(args: Array[String]): Option[GdalInfoOptions] =
     parser.parse(args, GdalInfoOptions())
+          .flatMap { options =>
+            // Validate here where we don't want to print usage
+            // on failure.
+            if(!options.file.exists) {
+              System.err.println(s"ERROR: File ${options.file} does not exist.")
+              None
+            } else {
+              Some(options)
+            }
+          }
 }
