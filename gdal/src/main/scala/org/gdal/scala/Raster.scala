@@ -29,7 +29,7 @@ class Raster(val ds: Dataset) {
   lazy val ymin: Double =
     geoTransform(3) + geoTransform(5) * rows
 
-  lazy val xmax: Double = 
+  lazy val xmax: Double =
     geoTransform(0) +  geoTransform(1) * cols
 
   lazy val ymax: Double =
@@ -44,7 +44,7 @@ class Raster(val ds: Dataset) {
   lazy val geoTransform: Array[Double] =
     ds.GetGeoTransform
 
-  lazy val groundControlPointCount: Long = 
+  lazy val groundControlPointCount: Long =
     ds.GetGCPCount
 
   lazy val groundControlPoints: Seq[GroundControlPoint] = {
@@ -53,13 +53,13 @@ class Raster(val ds: Dataset) {
     gcps.map(GroundControlPoint(_)).toSeq
   }
 
-  def metadata: List[String] = 
+  def metadata: List[String] =
     ds.GetMetadata_List("").toList.map(_.asInstanceOf[String])
 
-  def metadata(id: String): List[String] = 
+  def metadata(id: String): List[String] =
     ds.GetMetadata_List(id).toList.map(_.asInstanceOf[String])
 
-  lazy val bands: Vector[RasterBand] = 
+  lazy val bands: Vector[RasterBand] =
     (1 to ds.getRasterCount)
       .map { i => new RasterBand(ds.GetRasterBand(i), cols.toInt, rows.toInt) }
       .toVector
@@ -78,6 +78,18 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
 
   lazy val rasterType: GdalDataType =
     band.getDataType()
+
+  lazy val blockWidth: Int =
+    band.GetBlockXSize
+
+  lazy val blockHeight: Int =
+    band.GetBlockYSize
+
+  lazy val rasterColorCode: Int =
+    band.GetRasterColorInterpretation
+
+  lazy val rasterColorName: String =
+    gdal.GetColorInterpretationName(rasterColorCode)
 
   def dataShort(): Array[Short] = {
     val arr = Array.ofDim[Short](cols*rows)
@@ -105,7 +117,7 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
 }
 
 object GdalDataType {
-  val types = 
+  val types =
     List(TypeUnknown,TypeByte, TypeUInt16,TypeInt16,TypeUInt32,TypeInt32,
          TypeFloat32,TypeFloat64,TypeCInt16,TypeCInt32,TypeCFloat32,
          TypeCFloat64)
@@ -125,7 +137,7 @@ abstract sealed class GdalDataType(val code: Int) {
   def toString: String = gdal.GetDataTypeName(code)
 }
 
-case object TypeUnknown extends GdalDataType(0) 
+case object TypeUnknown extends GdalDataType(0)
 case object TypeByte extends GdalDataType(1)
 case object TypeUInt16 extends GdalDataType(2)
 case object TypeInt16 extends GdalDataType(3)
@@ -148,8 +160,8 @@ case class GroundControlPoint(id: String,
 
 object GroundControlPoint {
   def apply(gcp: GCP): GroundControlPoint =
-    GroundControlPoint(gcp.getId, 
-                       gcp.getInfo, 
+    GroundControlPoint(gcp.getId,
+                       gcp.getInfo,
                        gcp.getGCPPixel,
                        gcp.getGCPLine,
                        gcp.getGCPX,
