@@ -131,8 +131,9 @@ object GdalInfo {
       // TODO: bucket count
       // TODO: checksum
 
-      if (band.noDataValue != null) {
-        print(s"  NoData Value=${band.noDataValue}")
+      band.noDataValue match {
+        case Some(noDataValue) => print(s"  NoData Value=$noDataValue")
+        case None =>
       }
 
       // TODO: overviews
@@ -176,7 +177,7 @@ object GdalInfo {
             }
           }
           if (srs != null) { srs.delete() }
-        case None =>
+        case None => println()
       }
     }
   }

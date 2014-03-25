@@ -119,6 +119,7 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
     val arr = Array.ofDim[Double](cols*rows)
     band.ReadRaster(0,0,cols,rows,TypeFloat64,arr)
     arr
+  }
 }
 
 object GdalDataType {
