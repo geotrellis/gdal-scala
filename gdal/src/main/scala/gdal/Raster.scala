@@ -18,17 +18,26 @@ class Raster(val ds: Dataset) {
   lazy val cols: Long = ds.getRasterXSize
   lazy val rows: Long = ds.getRasterYSize
 
+  lazy val xmin: Double =
+    geoTransform(0)
+
+  lazy val ymin: Double =
+    geoTransform(3) + geoTransform(5) * rows
+
+  lazy val xmax: Double = 
+    geoTransform(0) +  geoTransform(1) * cols
+
+  lazy val ymax: Double =
+    geoTransform(3)
+
   lazy val projection: Option[String] = {
     val proj = ds.GetProjectionRef
     if(proj == null || proj.isEmpty) None
     else Some(proj)
   }
 
-  lazy val geoTransform: Array[Double] = {
-    val gt = Array.ofDim[Double](6)
-    ds.GetGeoTransform(gt)
-    gt
-  }
+  lazy val geoTransform: Array[Double] =
+    ds.GetGeoTransform
 
   lazy val groundControlPointCount: Long = 
     ds.GetGCPCount

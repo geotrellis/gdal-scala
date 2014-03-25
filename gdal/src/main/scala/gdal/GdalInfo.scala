@@ -109,5 +109,7 @@ object GdalInfo {
         printMetadata(header, id)
       }
     }
+
+    println(s"BOUNDING BOX: (${raster.xmin}, ${raster.ymin}, ${raster.xmax}, ${raster.ymax}")
   }
 }

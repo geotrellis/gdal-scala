@@ -31,4 +31,20 @@ object GdalBuild extends Build {
         "com.github.scopt" % "scopt_2.10" % "3.2.0"
       )
     )
+
+  lazy val geotrellis =
+    Project("geotrellis", file("geotrellis")).settings(
+      organization := "com.azavea.geotrellis",
+      name := "geotrellis-gdal",
+      version := "0.9.0",
+      scalaVersion := "2.10.3",
+
+      scalacOptions ++= scalaOptions,
+      fork in run := true,
+      javaOptions += "-Djava.library.path=/usr/local/lib",
+
+      libraryDependencies ++= Seq(
+        "com.azavea.geotrellis" %% "geotrellis" % "0.9.0"
+      )
+    ).dependsOn(gdal)
 }
