@@ -6,6 +6,8 @@ import org.gdal.gdal.Driver
 import org.gdal.gdal.GCP
 import org.gdal.osr.SpatialReference
 
+import java.nio.ByteBuffer
+
 import scala.collection.JavaConversions._
 
 class Raster(val ds: Dataset) {
@@ -57,11 +59,11 @@ class Raster(val ds: Dataset) {
 
   lazy val bands: Vector[RasterBand] = 
     (1 to ds.getRasterCount)
-      .map { i => new RasterBand(ds.GetRasterBand(i)) }
+      .map { i => new RasterBand(ds.GetRasterBand(i), cols.toInt, rows.toInt) }
       .toVector
 }
 
-class RasterBand(band: Band) {
+class RasterBand(band: Band, cols: Int, rows: Int) {
   lazy val noDataValue: Double = {
     val arr = Array.ofDim[java.lang.Double](1)
     band.GetNoDataValue(arr)
@@ -70,6 +72,9 @@ class RasterBand(band: Band) {
 
   lazy val rasterType: GdalDataType =
     band.getDataType()
+
+  def read(): ByteBuffer =
+    band.ReadRaster_Direct(0,0,cols,rows)
 }
 
 object GdalDataType {
