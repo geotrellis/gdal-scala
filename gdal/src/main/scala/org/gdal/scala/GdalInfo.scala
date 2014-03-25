@@ -130,7 +130,11 @@ object GdalInfo {
       // TODO: minimum and mean
       // TODO: bucket count
       // TODO: checksum
-      // TODO: NoData
+
+      if (band.noDataValue != null) {
+        print(s"  NoData Value=${band.noDataValue}")
+      }
+
       // TODO: overviews
       // TODO: mask flags
       // TODO: mask band overviews
