@@ -1,18 +1,18 @@
-name := "GDAL-scala"
+// name := "GDAL-scala"
 
-scalaVersion := "2.10.3"
+// scalaVersion := "2.10.3"
 
-fork in run := true
+// fork in run := true
 
 // resolvers ++= Seq(
 //
 // )
 
-libraryDependencies ++= Seq(
-  "com.github.scopt" % "scopt_2.10" % "3.2.0"
-)
+// libraryDependencies ++= Seq(
+//   "com.github.scopt" % "scopt_2.10" % "3.2.0"
+// )
 
-javaOptions += "-Djava.library.path=/usr/local/lib"
+//javaOptions += "-Djava.library.path=/usr/local/lib"
 
 // assemblySettings
 
