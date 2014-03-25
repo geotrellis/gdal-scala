@@ -110,6 +110,44 @@ object GdalInfo {
       }
     }
 
-    println(s"BOUNDING BOX: (${raster.xmin}, ${raster.ymin}, ${raster.xmax}, ${raster.ymax}")
+    println("Corner Coordinates:")
+    reportCorner(raster, "Upper Left ", 0.0, 0.0)
+    reportCorner(raster, "Lower Left ", 0.0, raster.rows)
+    reportCorner(raster, "Upper Right", raster.cols, 0.0)
+    reportCorner(raster, "Lower Right", raster.cols, raster.rows)
+    reportCorner(raster, "Center     ", raster.cols / 2.0, raster.rows / 2.0)
+  }
+
+  def reportCorner(raster: Raster, cornerName: String, x: Double, y: Double) = {
+    print(cornerName + " ")
+    if (raster.geoTransform.filter(_ != 0).length == 0) {
+      println(s"($x,$y)")
+    } else {
+      val gt = raster.geoTransform
+      val geox = gt(0) + gt(1) * x + gt(2) * y
+      val geoy = gt(3) + gt(4) * x + gt(5) * y
+      print(f"($geox%12.3f,$geoy%12.3f) ")
+
+      raster.projection match {
+        case Some(projection) =>
+          val srs = new SpatialReference(projection)
+          if (srs != null && projection.length != 0) {
+            val latLong = srs.CloneGeogCS()
+            if (latLong != null) {
+              val transform = CoordinateTransformation
+                .CreateCoordinateTransformation(srs, latLong)
+              if (transform != null) {
+		val point = transform.TransformPoint(geox, geoy, 0)
+                val xtrans = gdal.DecToDMS(point(0), "Long", 2)
+                val ytrans = gdal.DecToDMS(point(1), "Lat", 2)
+		println(s"($xtrans,$ytrans)");
+		transform.delete();
+	      }
+            }
+          }
+          if (srs != null) { srs.delete() }
+        case None =>
+      }
+    }
   }
 }
