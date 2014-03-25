@@ -125,6 +125,22 @@ object GdalInfo {
         case None =>
       }
       println()
+
+      // TODO: min/max
+      // TODO: minimum and mean
+      // TODO: bucket count
+      // TODO: checksum
+      // TODO: NoData
+      // TODO: overviews
+      // TODO: mask flags
+      // TODO: mask band overviews
+      // TODO: unit type
+      // TODO: categories
+      // TODO: offset
+      // TODO: scale
+      // TODO: metadata
+      // TODO: color table
+      // TODO: RAT
     }
   }
 
