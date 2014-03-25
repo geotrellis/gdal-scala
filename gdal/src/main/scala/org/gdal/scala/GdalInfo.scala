@@ -116,6 +116,11 @@ object GdalInfo {
     reportCorner(raster, "Upper Right", raster.cols, 0.0)
     reportCorner(raster, "Lower Right", raster.cols, raster.rows)
     reportCorner(raster, "Center     ", raster.cols / 2.0, raster.rows / 2.0)
+
+    for ((band, i) <- raster.bands.zipWithIndex) {
+      print(s"Band ${i+1} Block=${band.blockWidth}x${band.blockHeight} ")
+      print(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
+    }
   }
 
   def reportCorner(raster: Raster, cornerName: String, x: Double, y: Double) = {
