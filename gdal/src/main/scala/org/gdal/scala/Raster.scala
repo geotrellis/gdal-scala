@@ -88,6 +88,12 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
 
   lazy val rasterColorName: String =
     gdal.GetColorInterpretationName(rasterColorCode)
+
+  lazy val description: Option[String] = {
+    val desc = band.GetDescription
+    if(desc == null || desc.isEmpty) None
+    else Some(desc)
+  }
 }
 
 object GdalDataType {
