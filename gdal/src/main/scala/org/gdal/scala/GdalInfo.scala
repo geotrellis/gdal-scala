@@ -132,7 +132,7 @@ object GdalInfo {
       // TODO: checksum
 
       band.noDataValue match {
-        case Some(noDataValue) => print(s"  NoData Value=$noDataValue")
+        case Some(noDataValue) => println(s"  NoData Value=$noDataValue")
         case None =>
       }
 
@@ -140,7 +140,14 @@ object GdalInfo {
       // TODO: mask flags
       // TODO: mask band overviews
       // TODO: unit type
-      // TODO: categories
+
+      if (band.categories.length > 0) {
+        println( "  Categories:" )
+        for ((category, i) <- band.categories.zipWithIndex) {
+          println(s"    $i: $category")
+        }
+      }
+
       // TODO: offset
       // TODO: scale
       // TODO: metadata

@@ -97,6 +97,10 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
     else Some(desc)
   }
 
+  lazy val categories: Seq[String] = {
+    band.GetRasterCategoryNames.map(_.asInstanceOf[String]).toSeq
+  }
+
   def dataShort(): Array[Short] = {
     val arr = Array.ofDim[Short](cols*rows)
     band.ReadRaster(0,0,cols,rows,TypeInt16,arr)
