@@ -1,4 +1,4 @@
-package gdal
+package org.gdal.scala
 
 import org.gdal.gdal.gdal
 import org.gdal.gdal.Dataset

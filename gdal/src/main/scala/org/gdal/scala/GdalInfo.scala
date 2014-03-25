@@ -1,4 +1,4 @@
-package gdal
+package org.gdal.scala
 
 import java.util.Enumeration;
 import java.util.Hashtable;

@@ -1,14 +1,13 @@
 package geotrellis.gdal
 
-import gdal.Gdal
-import _root_.{gdal => GDAL}
-import gdal.{Raster => GdalRaster}
+import org.gdal.{scala => GDAL}
+import org.gdal.scala.Gdal
 
 import geotrellis._
 
 object GdalReader {
   def read(path: String, band: Int = 1): Raster = {
-    val gdalRaster: GdalRaster = Gdal.open(path)
+    val gdalRaster: GDAL.Raster = Gdal.open(path)
 
     val extent = Extent(gdalRaster.xmin, 
                         gdalRaster.ymin,
@@ -18,18 +17,18 @@ object GdalReader {
 
     val rasterBand = gdalRaster.bands(band)
     val rasterType = rasterBand.rasterType match {
-      case TypeUnknown => geotrellis.TypeDouble
-      case TypeByte => geotrellis.TypeByte
-      case TypeUInt16 => geotrellis.TypeInt
-      case TypeInt16 => geotrellis.TypeShort
-      case TypeUInt32 => geotrellis.TypeFloat
-      case TypeInt32 => geotrellis.TypeInt
-      case TypeFloat32 => geotrellis.TypeFloat
-      case TypeFloat64 => geotrellis.TypeDouble
-      case TypeCInt16 => ???
-      case TypeCInt32 => ???
-      case TypeCFloat32 => ???
-      case TypeCFloat64 => ???
+      case GDAL.TypeUnknown => geotrellis.TypeDouble
+      case GDAL.TypeByte => geotrellis.TypeByte
+      case GDAL.TypeUInt16 => geotrellis.TypeInt
+      case GDAL.TypeInt16 => geotrellis.TypeShort
+      case GDAL.TypeUInt32 => geotrellis.TypeFloat
+      case GDAL.TypeInt32 => geotrellis.TypeInt
+      case GDAL.TypeFloat32 => geotrellis.TypeFloat
+      case GDAL.TypeFloat64 => geotrellis.TypeDouble
+      case GDAL.TypeCInt16 => ???
+      case GDAL.TypeCInt32 => ???
+      case GDAL.TypeCFloat32 => ???
+      case GDAL.TypeCFloat64 => ???
     }
 
     ???

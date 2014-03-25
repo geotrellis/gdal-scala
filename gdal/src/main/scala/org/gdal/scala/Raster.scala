@@ -1,4 +1,4 @@
-package gdal
+package org.gdal.scala
 
 import org.gdal.gdal.Dataset
 import org.gdal.gdal.Band;
@@ -59,7 +59,6 @@ class Raster(val ds: Dataset) {
     (1 to ds.getRasterCount)
       .map { i => new RasterBand(ds.GetRasterBand(i)) }
       .toVector
-
 }
 
 class RasterBand(band: Band) {
