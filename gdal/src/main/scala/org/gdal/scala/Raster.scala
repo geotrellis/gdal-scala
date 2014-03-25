@@ -1,9 +1,10 @@
 package org.gdal.scala
 
 import org.gdal.gdal.Dataset
-import org.gdal.gdal.Band;
+import org.gdal.gdal.Band
 import org.gdal.gdal.Driver
 import org.gdal.gdal.GCP
+import org.gdal.gdal.gdal
 import org.gdal.osr.SpatialReference
 
 import java.nio.ByteBuffer
@@ -78,36 +79,35 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
 }
 
 object GdalDataType {
+  val types = 
+    List(TypeUnknown,TypeByte, TypeUInt16,TypeInt16,TypeUInt32,TypeInt32,
+         TypeFloat32,TypeFloat64,TypeCInt16,TypeCInt32,TypeCFloat32,
+         TypeCFloat64)
+
   implicit def intToGdalDataType(i: Int): GdalDataType =
-    i match {
-      case  0 => TypeUnknown
-      case  1 => TypeByte
-      case  2 => TypeUInt16
-      case  3 => TypeInt16
-      case  4 => TypeUInt32
-      case  5 => TypeInt32
-      case  6 => TypeFloat32
-      case  7 => TypeFloat64
-      case  8 => TypeCInt16
-      case  9 => TypeCInt32
-      case 10 => TypeCFloat32
-      case 11 => TypeCFloat64
+    types.find(_.code == i) match {
+      case Some(dt) => dt
+      case None => sys.error(s"Invalid GDAL data type code: $i")
     }
 }
 
-abstract sealed class GdalDataType
-case object TypeUnknown extends GdalDataType
-case object TypeByte extends GdalDataType
-case object TypeUInt16 extends GdalDataType
-case object TypeInt16 extends GdalDataType
-case object TypeUInt32 extends GdalDataType
-case object TypeInt32 extends GdalDataType
-case object TypeFloat32 extends GdalDataType
-case object TypeFloat64 extends GdalDataType
-case object TypeCInt16 extends GdalDataType
-case object TypeCInt32 extends GdalDataType
-case object TypeCFloat32 extends GdalDataType
-case object TypeCFloat64 extends GdalDataType
+abstract sealed class GdalDataType(val code: Int) {
+  override
+  def toString: String = gdal.GetDataTypeName(code)
+}
+
+case object TypeUnknown extends GdalDataType(0) 
+case object TypeByte extends GdalDataType(1)
+case object TypeUInt16 extends GdalDataType(2)
+case object TypeInt16 extends GdalDataType(3)
+case object TypeUInt32 extends GdalDataType(4)
+case object TypeInt32 extends GdalDataType(5)
+case object TypeFloat32 extends GdalDataType(6)
+case object TypeFloat64 extends GdalDataType(7)
+case object TypeCInt16 extends GdalDataType(8)
+case object TypeCInt32 extends GdalDataType(9)
+case object TypeCFloat32 extends GdalDataType(10)
+case object TypeCFloat64 extends GdalDataType(11)
 
 case class GroundControlPoint(id: String,
                               info: String,
