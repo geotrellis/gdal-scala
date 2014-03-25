@@ -10,6 +10,7 @@ import org.gdal.osr.SpatialReference
 import java.nio.ByteBuffer
 
 import scala.collection.JavaConversions._
+import scala.reflect.ClassTag
 
 class Raster(val ds: Dataset) {
   lazy val driver: Driver = ds.GetDriver()
@@ -65,17 +66,42 @@ class Raster(val ds: Dataset) {
 }
 
 class RasterBand(band: Band, cols: Int, rows: Int) {
-  lazy val noDataValue: Double = {
+  lazy val noDataValue: Option[Double] = {
     val arr = Array.ofDim[java.lang.Double](1)
     band.GetNoDataValue(arr)
-    arr(0)
+    if(arr(0) != null) {
+      Some(arr(0))
+    } else {
+      None
+    }
   }
 
   lazy val rasterType: GdalDataType =
     band.getDataType()
 
-  def read(): ByteBuffer =
-    band.ReadRaster_Direct(0,0,cols,rows)
+  def dataShort(): Array[Short] = {
+    val arr = Array.ofDim[Short](cols*rows)
+    band.ReadRaster(0,0,cols,rows,TypeInt16,arr)
+    arr
+  }
+
+  def dataInt(): Array[Int] = {
+    val arr = Array.ofDim[Int](cols*rows)
+    band.ReadRaster(0,0,cols,rows,TypeInt32,arr)
+    arr
+  }
+
+  def dataFloat(): Array[Float] = {
+    val arr = Array.ofDim[Float](cols*rows)
+    band.ReadRaster(0,0,cols,rows,TypeFloat32,arr)
+    arr
+  }
+
+  def dataDouble(): Array[Double] = {
+    val arr = Array.ofDim[Double](cols*rows)
+    band.ReadRaster(0,0,cols,rows,TypeFloat64,arr)
+    arr
+  }
 }
 
 object GdalDataType {
@@ -89,6 +115,9 @@ object GdalDataType {
       case Some(dt) => dt
       case None => sys.error(s"Invalid GDAL data type code: $i")
     }
+
+  implicit def GdalDataTypeToInt(typ: GdalDataType): Int =
+    typ.code
 }
 
 abstract sealed class GdalDataType(val code: Int) {

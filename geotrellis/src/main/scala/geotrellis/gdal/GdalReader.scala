@@ -39,9 +39,34 @@ object GdalReader {
       case GDAL.TypeCFloat64 => ???
     }
 
-    val arr = Array.ofDim[Byte](cols * rows)
-    rasterBand.read.get(arr, 0, cols * rows)
-    val data = RasterData.fromArrayByte(arr, rasterType, cols, rows)
+    val data = 
+      (rasterType match {
+        case TypeShort =>
+          ShortArrayRasterData(rasterBand.dataShort, cols, rows)
+        case TypeInt => 
+          IntArrayRasterData(rasterBand.dataInt, cols, rows)
+        case TypeFloat =>
+          FloatArrayRasterData(rasterBand.dataFloat, cols, rows)
+        case TypeDouble =>
+          DoubleArrayRasterData(rasterBand.dataDouble, cols, rows)
+      }).mutable
+
+    // Replace NODATA values
+    rasterBand.noDataValue match {
+      case Some(nd) =>
+//    val nd = 0.0
+        var col = 0
+        while(col < cols) {
+          var row = 0
+          while(row < rows) {
+            if(data.getDouble(col,row) == nd) { data.set(col, row, NODATA) }
+            row += 1
+          }
+          col += 1
+        }
+      case None =>
+    }
+
     Raster(data, rasterExtent)
   }
 }

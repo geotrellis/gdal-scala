@@ -1,12 +1,13 @@
 package geotrellis.gdal
 
+import geotrellis._
 import geotrellis.data.GeoTiff
 
 import org.scalatest.FunSpec
 import org.scalatest.matchers._
 
 class GdalReaderSpec extends FunSpec with ShouldMatchers {
-  val path = "geotrellis/data/cea.tif"
+  val path = "geotrellis/data/slope.tif"
 
   describe("reading a GeoTiff") {
     it("should match one read with GeoTools") {
@@ -29,7 +30,17 @@ class GdalReaderSpec extends FunSpec with ShouldMatchers {
 
       gdalRaster.rasterType should be (geotoolsRaster.rasterType)
 
-//      gdalRaster.toArray should be (geotoolsRaster.toArray)
+      for(col <- 0 until gdRe.cols) {
+        for(row <- 0 until gdRe.rows) {
+          val actual = gdalRaster.getDouble(col, row)
+          val expected = geotoolsRaster.getDouble(col, row)
+          withClue(s"At ($col, $row): GDAL - $actual  GeoTools - $expected") {
+            isNoData(actual) should be (isNoData(expected))
+            if(isData(actual))
+              actual should be (expected)
+          }
+        }
+      }
     }
   }
 }

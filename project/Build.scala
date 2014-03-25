@@ -46,7 +46,7 @@ object GdalBuild extends Build {
       libraryDependencies ++= Seq(
         "com.azavea.geotrellis" %% "geotrellis" % "0.9.0",
         "com.azavea.geotrellis" %% "geotrellis-geotools" % "0.9.0" % "test",
-        "org.scalatest"         %  "scalatest_2.10"  % "2.0.M5b" % "test"
+        "org.scalatest"         %%  "scalatest"  % "2.0.M5b" % "test"
       ),
       resolvers ++= 
         Seq(
