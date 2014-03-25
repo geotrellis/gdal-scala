@@ -91,6 +91,12 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
   lazy val rasterColorName: String =
     gdal.GetColorInterpretationName(rasterColorCode)
 
+  lazy val description: Option[String] = {
+    val desc = band.GetDescription
+    if(desc == null || desc.isEmpty) None
+    else Some(desc)
+  }
+
   def dataShort(): Array[Short] = {
     val arr = Array.ofDim[Short](cols*rows)
     band.ReadRaster(0,0,cols,rows,TypeInt16,arr)
@@ -113,7 +119,6 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
     val arr = Array.ofDim[Double](cols*rows)
     band.ReadRaster(0,0,cols,rows,TypeFloat64,arr)
     arr
-  }
 }
 
 object GdalDataType {

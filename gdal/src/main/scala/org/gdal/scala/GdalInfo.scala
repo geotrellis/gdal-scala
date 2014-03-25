@@ -119,7 +119,32 @@ object GdalInfo {
 
     for ((band, i) <- raster.bands.zipWithIndex) {
       print(s"Band ${i+1} Block=${band.blockWidth}x${band.blockHeight} ")
-      println(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
+      print(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
+      band.description match {
+        case Some(description) => print(s" Description = $description")
+        case None =>
+      }
+      println()
+
+      // TODO: min/max
+      // TODO: minimum and mean
+      // TODO: bucket count
+      // TODO: checksum
+
+      if (band.noDataValue != null) {
+        print(s"  NoData Value=${band.noDataValue}")
+      }
+
+      // TODO: overviews
+      // TODO: mask flags
+      // TODO: mask band overviews
+      // TODO: unit type
+      // TODO: categories
+      // TODO: offset
+      // TODO: scale
+      // TODO: metadata
+      // TODO: color table
+      // TODO: RAT
     }
   }
 
