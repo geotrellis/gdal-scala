@@ -2,11 +2,13 @@ package org.gdal.scala
 
 import org.gdal.gdal.Dataset
 import org.gdal.gdal.Band
+import org.gdal.gdal.ColorTable
 import org.gdal.gdal.Driver
 import org.gdal.gdal.GCP
 import org.gdal.gdal.gdal
 import org.gdal.osr.SpatialReference
 
+import java.awt.Color
 import java.nio.ByteBuffer
 
 import scala.collection.JavaConversions._
@@ -97,6 +99,15 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
     else Some(desc)
   }
 
+  lazy val colorTable: Option[(Vector[RasterColor], String)] = {
+    val ct = band.GetRasterColorTable
+    if(ct == null) None
+    else Some(((0 until ct.GetCount)
+      .map { i => new RasterColor(ct.GetColorEntry(i)) }
+      .toVector
+    ), gdal.GetPaletteInterpretationName(ct.GetPaletteInterpretation))
+  }
+
   lazy val categories: Seq[String] = {
     band.GetRasterCategoryNames.map(_.asInstanceOf[String]).toSeq
   }
@@ -124,6 +135,11 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
     band.ReadRaster(0,0,cols,rows,TypeFloat64,arr)
     arr
   }
+}
+
+class RasterColor(color: Color) {
+  override
+  def toString: String = s"${color.getRed},${color.getGreen},${color.getBlue},${color.getAlpha}"
 }
 
 object GdalDataType {

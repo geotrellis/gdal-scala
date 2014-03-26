@@ -144,14 +144,27 @@ object GdalInfo {
       if (band.categories.length > 0) {
         println( "  Categories:" )
         for ((category, i) <- band.categories.zipWithIndex) {
-          println(s"    $i: $category")
+          println(s"      $i: $category")
         }
       }
 
       // TODO: offset
       // TODO: scale
       // TODO: metadata
-      // TODO: color table
+
+      if (band.rasterColorName == "Palette") {
+        band.colorTable match {
+          case Some((colorTable, name)) =>
+            println(s"  Color Table ($name with ${colorTable.size} entries)")
+            if (options.showColorTable) {
+              for ((color, i) <- colorTable.zipWithIndex) {
+                println(s"    $i: $color");
+              }
+            }
+          case None =>
+        }
+      }
+
       // TODO: RAT
     }
   }
