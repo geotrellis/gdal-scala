@@ -119,12 +119,11 @@ object GdalInfo {
 
     for ((band, i) <- raster.bands.zipWithIndex) {
       print(s"Band ${i+1} Block=${band.blockWidth}x${band.blockHeight} ")
-      print(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
+      println(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
       band.description match {
-        case Some(description) => print(s" Description = $description")
+        case Some(description) => println(s"  Description = $description")
         case None =>
       }
-      println()
 
       // TODO: min/max
       // TODO: minimum and mean
