@@ -119,7 +119,7 @@ object GdalInfo {
 
     for ((band, i) <- raster.bands.zipWithIndex) {
       print(s"Band ${i+1} Block=${band.blockWidth}x${band.blockHeight} ")
-      print(s"Type=${band.rasterType}, ColorInterp=${band.rasterColorName}")
+      print(s"Type=${band.rasterType}, ColorInterp=${band.colorName}")
       band.description match {
         case Some(description) => print(s" Description = $description")
         case None =>

@@ -54,7 +54,6 @@ object GdalReader {
     // Replace NODATA values
     rasterBand.noDataValue match {
       case Some(nd) =>
-//    val nd = 0.0
         var col = 0
         while(col < cols) {
           var row = 0

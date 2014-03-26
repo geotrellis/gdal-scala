@@ -55,4 +55,30 @@ object GdalBuild extends Build {
           "Geotools" at "http://download.osgeo.org/webdav/geotools/"
         )
     ).dependsOn(gdal)
+
+  // Project: benchmark
+
+  val key = AttributeKey[Boolean]("javaOptionsPatched")
+  lazy val benchmark: Project =
+    Project("benchmark", file("benchmark"))
+      .settings(
+      organization := "org.gdal.gdal",
+        name := "gdal-benchmark",
+
+      scalaVersion := "2.10.3",
+        // raise memory limits here if necessary
+        javaOptions += "-Xmx2G",
+        javaOptions += "-Djava.library.path=/usr/local/lib",
+
+      libraryDependencies ++= Seq(
+        "com.azavea.geotrellis" %% "geotrellis-geotools" % "0.9.0"
+      ),
+        resolvers ++=
+          Seq(
+            "Geotools" at "http://download.osgeo.org/webdav/geotools/"
+          ),
+
+      // enable forking in both run and test
+      fork := true
+    ).dependsOn(geotrellis)
 }
