@@ -23,6 +23,7 @@ object GdalBuild extends Build {
      
       scalacOptions ++= scalaOptions,
       fork in run := true,
+      fork in test := true,
       javaOptions += "-Djava.library.path=/usr/local/lib",
 
       mainClass := Some("gdal.Main"),
@@ -41,6 +42,7 @@ object GdalBuild extends Build {
 
       scalacOptions ++= scalaOptions,
       fork in run := true,
+      fork in test := true,
       javaOptions += "-Djava.library.path=/usr/local/lib",
 
       libraryDependencies ++= Seq(
