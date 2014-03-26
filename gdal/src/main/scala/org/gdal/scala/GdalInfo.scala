@@ -119,12 +119,11 @@ object GdalInfo {
 
     for ((band, i) <- raster.bands.zipWithIndex) {
       print(s"Band ${i+1} Block=${band.blockWidth}x${band.blockHeight} ")
-      print(s"Type=${band.rasterType}, ColorInterp=${band.colorName}")
+      println(s"Type=${band.rasterType}, ColorInterp=${band.colorName}")
       band.description match {
-        case Some(description) => print(s" Description = $description")
+        case Some(description) => println(s"  Description = $description")
         case None =>
       }
-      println()
 
       // TODO: min/max
       // TODO: minimum and mean
@@ -144,14 +143,27 @@ object GdalInfo {
       if (band.categories.length > 0) {
         println( "  Categories:" )
         for ((category, i) <- band.categories.zipWithIndex) {
-          println(s"    $i: $category")
+          println(s"      $i: $category")
         }
       }
 
       // TODO: offset
       // TODO: scale
       // TODO: metadata
-      // TODO: color table
+
+      if (band.colorName == "Palette") {
+        band.colorTable match {
+          case Some((colorTable, name)) =>
+            println(s"  Color Table ($name with ${colorTable.size} entries)")
+            if (options.showColorTable) {
+              for ((color, i) <- colorTable.zipWithIndex) {
+                println(s"    $i: $color");
+              }
+            }
+          case None =>
+        }
+      }
+
       // TODO: RAT
     }
   }

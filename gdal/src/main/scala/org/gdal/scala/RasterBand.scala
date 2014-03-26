@@ -39,6 +39,15 @@ class RasterBand(band: Band, cols: Int, rows: Int) {
   lazy val colorName: String =
     gdal.GetColorInterpretationName(colorCode)
 
+  lazy val colorTable: Option[(Vector[RasterColor], String)] = {
+    val ct = band.GetRasterColorTable
+    if(ct == null) None
+    else Some(((0 until ct.GetCount)
+      .map { i => new RasterColor(ct.GetColorEntry(i)) }
+      .toVector
+    ), gdal.GetPaletteInterpretationName(ct.GetPaletteInterpretation))
+  }
+
   lazy val description: Option[String] = {
     val desc = band.GetDescription
     if(desc == null || desc.isEmpty) None
