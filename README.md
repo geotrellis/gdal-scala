@@ -12,6 +12,17 @@ Building\Installing GDAL java bindings
 MAC OSX
 -------
 
+java.opts needs to be set to something like:
+
+```
+JAVA_HOME = /System/Library/Frameworks/JavaVM.framework/Versions/Current
+JAVADOC=$(JAVA_HOME)/Commands/javadoc
+JAVAC=$(JAVA_HOME)/Commands/javac
+JAVA=$(JAVA_HOME)/Commands/java
+JAR=$(JAVA_HOME)/Commands/jar
+JAVA_INCLUDE=-I$(JAVA_HOME)/Headers
+```
+
 ```
 > brew install proj
 > # get gdal source
